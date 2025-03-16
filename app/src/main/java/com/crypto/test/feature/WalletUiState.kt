@@ -8,14 +8,15 @@ data class WalletUiState(
 ) {
     companion object {
         val Uninitialized = WalletUiState()
+        val NotLoggedIn = WalletUiState()
     }
 }
 
 data class WalletCurrencyUiState(
-    val iconUrl: String,
-    val name: String,
-    val currencyBalance: String,
-    val currency: String,
+    val iconUrl: String = "",
+    val name: String = "",
+    val currencyBalance: String = "0",
+    val currency: String = "",
     val anchorSymbol: String = "$",
     val anchorCurrencyBalance: String = "0",
     val anchorCurrency: String = "USD",
