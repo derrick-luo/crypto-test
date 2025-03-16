@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="ContentDescription">
+
+    <ImageView
+        android:id="@+id/fragment_wallet_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/fragment_wallet_currencies"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:background="@android:color/holo_blue_dark" />
+
+    <TextView
+        android:id="@+id/fragment_wallet_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@id/fragment_wallet_balance"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="crypto.com | DEFI WALLET" />
+
+    <TextView
+        android:id="@+id/fragment_wallet_balance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@id/fragment_wallet_currencies"
+        app:layout_constraintEnd_toEndOf="@id/fragment_wallet_title"
+        app:layout_constraintStart_toStartOf="@id/fragment_wallet_title"
+        app:layout_constraintTop_toBottomOf="@id/fragment_wallet_title"
+        tools:text="$ 36.68.USD" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/fragment_wallet_currencies"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.65f"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:itemCount="10"
+        tools:listitem="@layout/view_item_currency" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
