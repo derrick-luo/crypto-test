@@ -106,15 +106,15 @@ class RemoteWalletDataSource: WalletDataSource {
         private val balance = listOf(
             Balance(
                 currency = "BTC",
-                amount = BigDecimal(1.4)
+                amount = BigDecimal.valueOf(1.4)
             ),
             Balance(
                 currency = "ETH",
-                amount = BigDecimal(20.3)
+                amount = BigDecimal.valueOf(20.3)
             ),
             Balance(
                 currency = "CRO",
-                amount = BigDecimal(259.1)
+                amount = BigDecimal.valueOf(259.1)
             ),
         )
     }

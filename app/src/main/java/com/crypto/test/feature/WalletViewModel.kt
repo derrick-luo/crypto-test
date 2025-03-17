@@ -1,18 +1,24 @@
 package com.crypto.test.feature
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
+import com.crypto.test.CryptoApp
 import com.crypto.test.data.UserRepository
 import com.crypto.test.data.WalletRepository
 import com.crypto.test.data.dto.Balance
 import com.crypto.test.data.dto.Currency
 import com.crypto.test.data.dto.Tier
+import com.crypto.test.ext.moneyStr
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
+import kotlin.reflect.KClass
 
 class WalletViewModel(
     private val userRepository: UserRepository,
@@ -48,10 +54,10 @@ class WalletViewModel(
 
                 val balance = walletCurrencyUiStates.sumOf { walletCurrencyUiState ->
                     BigDecimal(walletCurrencyUiState.anchorCurrencyBalance)
-                }
+                }.moneyStr
 
                 _uiState.value = WalletUiState(
-                    balance = balance.toString(),
+                    balance = balance,
                     currenciesUiState = walletCurrencyUiStates
                 )
             }
@@ -74,7 +80,7 @@ class WalletViewModel(
             }?.rates?.first()?.rate
 
             val anchorCurrencyBalance = runCatching {
-                balance.amount.times(BigDecimal(rate)).toString()
+                balance.amount.times(BigDecimal(rate)).moneyStr
             }.getOrElse { "unknown" }
 
             WalletCurrencyUiState(
@@ -99,13 +105,21 @@ class WalletViewModel(
             walletCurrencyUiState.copy(
                 iconUrl = currency?.iconUrl ?: "",
                 // use id as displayed name if we can't find currency data
-                name = currency?.name?: walletCurrencyUiState.currency
+                name = currency?.name ?: walletCurrencyUiState.currency
             )
         }
     }
 
-
     companion object {
         private val TAG = WalletViewModel::class.simpleName
+
+        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: KClass<T>, extras: CreationExtras): T {
+                val cryptoApp = checkNotNull(extras[APPLICATION_KEY] as? CryptoApp)
+                return WalletViewModel(cryptoApp.userRepo, cryptoApp.walletRepo) as T
+            }
+        }
     }
 }

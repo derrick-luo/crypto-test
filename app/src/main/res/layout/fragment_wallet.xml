@@ -10,24 +10,24 @@
         android:id="@+id/fragment_wallet_background"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@android:color/holo_blue_dark"
         app:layout_constraintBottom_toTopOf="@id/fragment_wallet_currencies"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:background="@android:color/holo_blue_dark" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/fragment_wallet_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
+        android:text="crypto.com | DEFI WALLET"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toTopOf="@id/fragment_wallet_balance"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"
-        tools:text="crypto.com | DEFI WALLET" />
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
         android:id="@+id/fragment_wallet_balance"
@@ -46,10 +46,11 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
+        android:background="#E6E6E6"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.65f"
+        app:layout_constraintHeight_percent="0.65"
         app:layout_constraintStart_toStartOf="parent"
         tools:itemCount="10"
         tools:listitem="@layout/view_item_currency" />

@@ -1,6 +1,7 @@
 package com.crypto.test.feature
 
 import android.annotation.SuppressLint
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,35 +11,80 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import com.bumptech.glide.Glide
 import com.crypto.test.R
 import com.crypto.test.databinding.FragmentWalletBinding
 import com.crypto.test.databinding.ViewItemCurrencyBinding
 import kotlinx.coroutines.launch
 
 
-class WalletFragment : Fragment(R.layout.fragment_wallet) {
+class WalletFragment : Fragment() {
 
     private val viewBinding: FragmentWalletBinding by lazy {
         FragmentWalletBinding.inflate(layoutInflater)
     }
 
-    private val viewModel: WalletViewModel by viewModels()
+    private val viewModel: WalletViewModel by viewModels {
+        WalletViewModel.Factory
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return viewBinding.root
+    }
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = WalletCurrenciesAdapter().also {
-            viewBinding.fragmentWalletCurrencies.adapter = it
+        val adapter = WalletCurrenciesAdapter()
+
+        // setup recycler view
+        with(viewBinding.fragmentWalletCurrencies) {
+            this.adapter = adapter
+            this.addItemDecoration(object : ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+
+                    val pos = parent.getChildAdapterPosition(view)
+                    with(outRect) {
+                        when (pos) {
+                            0 -> {
+                                top = ITEM_SPACING * 2
+                                bottom = ITEM_SPACING
+                            }
+
+                            parent.adapter?.itemCount -> {
+                                top = ITEM_SPACING
+                                bottom = ITEM_SPACING * 2
+                            }
+
+                            else -> {
+                                top = ITEM_SPACING
+                                bottom = ITEM_SPACING
+                            }
+                        }
+                    }
+                }
+            })
         }
 
         lifecycleScope.launch {
 
+            // observe ui state change
             viewModel.uiState.collect { uiState ->
 
+                Log.i(TAG, "onUiState: $uiState")
                 viewBinding.fragmentWalletBalance.text =
                     "${uiState.symbol} ${uiState.balance} ${uiState.currency}"
-
                 adapter.set(uiState.currenciesUiState)
             }
         }
@@ -85,7 +131,12 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
                 }
 
                 with(binding) {
-                    viewItemCurrencyIcon
+
+                    Glide.with(viewItemCurrencyIcon)
+                        .load(uiState.iconUrl)
+                        .placeholder(R.drawable.ic_logo_cro)
+                        .into(viewItemCurrencyIcon)
+
                     viewItemCurrencyName.text = uiState.name
                     viewItemCurrencyBalance.text = uiState.currencyBalance
                     viewItemCurrency.text = uiState.currency
@@ -97,6 +148,7 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
     }
 
     companion object {
-        val TAG = WalletFragment::class.simpleName
+        private val TAG = WalletFragment::class.simpleName
+        private const val ITEM_SPACING = 30
     }
 }
