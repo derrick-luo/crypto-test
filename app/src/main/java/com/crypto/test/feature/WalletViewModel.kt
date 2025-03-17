@@ -1,5 +1,6 @@
 package com.crypto.test.feature
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -12,6 +13,7 @@ import com.crypto.test.data.dto.Balance
 import com.crypto.test.data.dto.Currency
 import com.crypto.test.data.dto.Tier
 import com.crypto.test.ext.moneyStr
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,6 +21,7 @@ import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import kotlin.reflect.KClass
+import kotlin.time.Duration.Companion.seconds
 
 class WalletViewModel(
     private val userRepository: UserRepository,
@@ -31,8 +34,18 @@ class WalletViewModel(
 
     init {
         viewModelScope.launch {
-            fetchBalance()
+            // we can also setup this repeated fetching task to associate with view's lifecycle
+            Log.i(TAG, "started fetching balance")
+            repeat(Int.MAX_VALUE) {
+                fetchBalance()
+                delay(5.seconds)
+            }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        Log.i(TAG, "stopped fetching balance")
     }
 
     suspend fun fetchBalance() {
@@ -60,6 +73,8 @@ class WalletViewModel(
                     balance = balance,
                     currenciesUiState = walletCurrencyUiStates
                 )
+
+                Log.i(TAG, "balance fetched")
             }
     }
 
@@ -96,6 +111,7 @@ class WalletViewModel(
     private fun List<WalletCurrencyUiState>.setCurrencyData(
         currencies: List<Currency>
     ): List<WalletCurrencyUiState> {
+
         return this.map { walletCurrencyUiState ->
 
             val currency = currencies.find {
@@ -111,6 +127,7 @@ class WalletViewModel(
     }
 
     companion object {
+
         private val TAG = WalletViewModel::class.simpleName
 
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {

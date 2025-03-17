@@ -4,9 +4,11 @@ import com.crypto.test.data.dto.Balance
 import com.crypto.test.data.dto.Currency
 import com.crypto.test.data.dto.Rate
 import com.crypto.test.data.dto.Tier
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import java.math.BigDecimal
 
 /**
@@ -14,14 +16,14 @@ import java.math.BigDecimal
  *
  * for simplicity, json data deserialization and network requests implementation are omitted.
  */
-class RemoteWalletDataSource: WalletDataSource {
+class RemoteWalletDataSource : WalletDataSource {
 
     override suspend fun getRates(): Flow<List<Tier>> {
         // mock a get rates network request
         return flow {
             delay(500)
             emit(rates)
-        }
+        }.flowOn(Dispatchers.IO)
     }
 
     override suspend fun getCurrencies(): Flow<List<Currency>> {
@@ -29,7 +31,7 @@ class RemoteWalletDataSource: WalletDataSource {
         return flow {
             delay(500)
             emit(currencies)
-        }
+        }.flowOn(Dispatchers.IO)
     }
 
     override suspend fun getBalance(userToken: String): Flow<List<Balance>> {
@@ -37,7 +39,7 @@ class RemoteWalletDataSource: WalletDataSource {
         return flow {
             delay(500)
             emit(balance)
-        }
+        }.flowOn(Dispatchers.IO)
     }
 
     /**

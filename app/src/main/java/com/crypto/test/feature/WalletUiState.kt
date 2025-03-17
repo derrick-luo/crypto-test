@@ -4,7 +4,7 @@ data class WalletUiState(
     val symbol: String = "$",
     val balance: String = "0",
     val currency: String = "USD",
-    val currenciesUiState: List<WalletCurrencyUiState> = emptyList()
+    val currenciesUiState: List<WalletCurrencyUiState> = emptyList(),
 ) {
     companion object {
         val Uninitialized = WalletUiState()
